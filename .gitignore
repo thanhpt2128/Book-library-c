@@ -1,0 +1,49 @@
+# Build directory
+build/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Compiled executables
+library
+library_web
+
+# Database files
+*.db
+*.db-journal
+
+# Object files
+*.o
+*.obj
+*.lo
+*.slo
+
+# Compiled libraries
+*.so
+*.so.*
+*.a
+*.la
+*.lib
+*.dll
+*.dylib
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb

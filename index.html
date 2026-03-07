@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #ddd;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 1em;
+            color: #666;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            background: #e0e0e0;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button.danger {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        button.success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .result pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .error {
+            color: #f5576c;
+            background: #ffe0e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .success {
+            color: #00b894;
+            background: #d4f8e8;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Library Management System</h1>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('books')">📖 Books</button>
+            <button class="tab" onclick="showTab('users')">👥 Users</button>
+            <button class="tab" onclick="showTab('borrow')">🔄 Borrow/Return</button>
+            <button class="tab" onclick="showTab('search')">🔍 Search</button>
+            <button class="tab" onclick="showTab('lists')">📋 Lists</button>
+        </div>
+
+        <div class="content">
+            <!-- Books Section -->
+            <div id="books" class="section active">
+                <div class="grid">
+                    <div class="card">
+                        <h3>➕ Add Book</h3>
+                        <div class="form-group">
+                            <label>Title:</label>
+                            <input type="text" id="addBookTitle" placeholder="Enter book title">
+                        </div>
+                        <div class="form-group">
+                            <label>Author:</label>
+                            <input type="text" id="addBookAuthor" placeholder="Enter author name">
+                        </div>
+                        <button onclick="addBook()">Add Book</button>
+                        <div id="addBookResult" class="result" style="display:none;"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>👁️ View Book</h3>
+                        <div class="form-group">
+                            <label>Book ID:</label>
+                            <input type="number" id="viewBookId" placeholder="Enter book ID">
+                        </div>
+                        <button class="success" onclick="viewBook()">View Book</button>
+                        <div id="viewBookResult" class="result" style="display:none;"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>✏️ Edit Book</h3>
+                        <div class="form-group">
+                            <label>Book ID:</label>
+                            <input type="number" id="editBookId" placeholder="Enter book ID">
+                        </div>
+                        <div class="form-group">
+                            <label>New Title:</label>
+                            <input type="text" id="editBookTitle" placeholder="Enter new title">
+                        </div>
+                        <div class="form-group">
+                            <label>New Author:</label>
+                            <input type="text" id="editBookAuthor" placeholder="Enter new author">
+                        </div>
+                        <button onclick="editBook()">Update Book</button>
+                        <div id="editBookResult" class="result" style="display:none;"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>🗑️ Delete Book</h3>
+                        <div class="form-group">
+                            <label>Book ID:</label>
+                            <input type="number" id="deleteBookId" placeholder="Enter book ID">
+                        </div>
+                        <button class="danger" onclick="deleteBook()">Delete Book</button>
+                        <div id="deleteBookResult" class="result" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Section -->
+            <div id="users" class="section">
+                <div class="grid">
+                    <div class="card">
+                        <h3>➕ Add User</h3>
+                        <div class="form-group">
+                            <label>Name:</label>
+                            <input type="text" id="addUserName" placeholder="Enter user name">
+                        </div>
+                        <button onclick="addUser()">Add User</button>
+                        <div id="addUserResult" class="result" style="display:none;"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>👁️ View User</h3>
+                        <div class="form-group">
+                            <label>User ID:</label>
+                            <input type="number" id="viewUserId" placeholder="Enter user ID">
+                        </div>
+                        <button class="success" onclick="viewUser()">View User</button>
+                        <div id="viewUserResult" class="result" style="display:none;"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>✏️ Edit User</h3>
+                        <div class="form-group">
+                            <label>User ID:</label>
+                            <input type="number" id="editUserId" placeholder="Enter user ID">
+                        </div>
+                        <div class="form-group">
+                            <label>New Name:</label>
+                            <input type="text" id="editUserName" placeholder="Enter new name">
+                        </div>
+                        <button onclick="editUser()">Update User</button>
+                        <div id="editUserResult" class="result" style="display:none;"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>🗑️ Delete User</h3>
+                        <div class="form-group">
+                            <label>User ID:</label>
+                            <input type="number" id="deleteUserId" placeholder="Enter user ID">
+                        </div>
+                        <button class="danger" onclick="deleteUser()">Delete User</button>
+                        <div id="deleteUserResult" class="result" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Borrow/Return Section -->
+            <div id="borrow" class="section">
+                <div class="grid">
+                    <div class="card">
+                        <h3>📤 Borrow Book</h3>
+                        <div class="form-group">
+                            <label>User ID:</label>
+                            <input type="number" id="borrowUserId" placeholder="Enter user ID">
+                        </div>
+                        <div class="form-group">
+                            <label>Book ID:</label>
+                            <input type="number" id="borrowBookId" placeholder="Enter book ID">
+                        </div>
+                        <button onclick="borrowBook()">Borrow Book</button>
+                        <div id="borrowResult" class="result" style="display:none;"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>📥 Return Book</h3>
+                        <div class="form-group">
+                            <label>User ID:</label>
+                            <input type="number" id="returnUserId" placeholder="Enter user ID">
+                        </div>
+                        <div class="form-group">
+                            <label>Book ID:</label>
+                            <input type="number" id="returnBookId" placeholder="Enter book ID">
+                        </div>
+                        <button class="success" onclick="returnBook()">Return Book</button>
+                        <div id="returnResult" class="result" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Section -->
+            <div id="search" class="section">
+                <div class="grid">
+                    <div class="card">
+                        <h3>🔍 Search by Title</h3>
+                        <div class="form-group">
+                            <label>Title Keyword:</label>
+                            <input type="text" id="searchTitle" placeholder="Enter title keyword">
+                        </div>
+                        <button onclick="searchByTitle()">Search</button>
+                        <div id="searchTitleResult" class="result" style="display:none;"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>🔍 Search by Author</h3>
+                        <div class="form-group">
+                            <label>Author Keyword:</label>
+                            <input type="text" id="searchAuthor" placeholder="Enter author keyword">
+                        </div>
+                        <button onclick="searchByAuthor()">Search</button>
+                        <div id="searchAuthorResult" class="result" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lists Section -->
+            <div id="lists" class="section">
+                <div class="card">
+                    <h3>📚 All Books</h3>
+                    <button onclick="listAllBooks()">Load All Books</button>
+                    <div id="allBooksResult" class="result" style="display:none;"></div>
+                </div>
+
+                <div class="card">
+                    <h3>✅ Available Books</h3>
+                    <button class="success" onclick="listAvailableBooks()">Load Available Books</button>
+                    <div id="availableBooksResult" class="result" style="display:none;"></div>
+                </div>
+
+                <div class="card">
+                    <h3>👥 All Users</h3>
+                    <button onclick="listAllUsers()">Load All Users</button>
+                    <div id="allUsersResult" class="result" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8080/api';
+
+        function showTab(tabName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function showResult(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = isError ? 'result error' : 'result success';
+            element.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+        }
+
+        async function apiCall(method, endpoint, data = null) {
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+
+                if (data) {
+                    options.body = JSON.stringify(data);
+                }
+
+                const response = await fetch(API_BASE + endpoint, options);
+                const result = await response.json();
+                return { success: response.ok, data: result };
+            } catch (error) {
+                return { success: false, data: { error: error.message } };
+            }
+        }
+
+        // Books functions
+        async function addBook() {
+            const title = document.getElementById('addBookTitle').value;
+            const author = document.getElementById('addBookAuthor').value;
+            const result = await apiCall('POST', '/books', { title, author });
+            showResult('addBookResult', result.data, !result.success);
+        }
+
+        async function viewBook() {
+            const id = document.getElementById('viewBookId').value;
+            const result = await apiCall('GET', `/books/${id}`);
+            showResult('viewBookResult', result.data, !result.success);
+        }
+
+        async function editBook() {
+            const id = document.getElementById('editBookId').value;
+            const title = document.getElementById('editBookTitle').value;
+            const author = document.getElementById('editBookAuthor').value;
+            const result = await apiCall('PUT', `/books/${id}`, { title, author });
+            showResult('editBookResult', result.data, !result.success);
+        }
+
+        async function deleteBook() {
+            const id = document.getElementById('deleteBookId').value;
+            const result = await apiCall('DELETE', `/books/${id}`);
+            showResult('deleteBookResult', result.data, !result.success);
+        }
+
+        // Users functions
+        async function addUser() {
+            const name = document.getElementById('addUserName').value;
+            const result = await apiCall('POST', '/users', { name });
+            showResult('addUserResult', result.data, !result.success);
+        }
+
+        async function viewUser() {
+            const id = document.getElementById('viewUserId').value;
+            const result = await apiCall('GET', `/users/${id}`);
+            showResult('viewUserResult', result.data, !result.success);
+        }
+
+        async function editUser() {
+            const id = document.getElementById('editUserId').value;
+            const name = document.getElementById('editUserName').value;
+            const result = await apiCall('PUT', `/users/${id}`, { name });
+            showResult('editUserResult', result.data, !result.success);
+        }
+
+        async function deleteUser() {
+            const id = document.getElementById('deleteUserId').value;
+            const result = await apiCall('DELETE', `/users/${id}`);
+            showResult('deleteUserResult', result.data, !result.success);
+        }
+
+        // Borrow/Return functions
+        async function borrowBook() {
+            const user_id = parseInt(document.getElementById('borrowUserId').value);
+            const book_id = parseInt(document.getElementById('borrowBookId').value);
+            const result = await apiCall('POST', '/borrow', { user_id, book_id });
+            showResult('borrowResult', result.data, !result.success);
+        }
+
+        async function returnBook() {
+            const user_id = parseInt(document.getElementById('returnUserId').value);
+            const book_id = parseInt(document.getElementById('returnBookId').value);
+            const result = await apiCall('POST', '/return', { user_id, book_id });
+            showResult('returnResult', result.data, !result.success);
+        }
+
+        // Search functions
+        async function searchByTitle() {
+            const title = document.getElementById('searchTitle').value;
+            const result = await apiCall('GET', `/search/books?title=${encodeURIComponent(title)}`);
+            showResult('searchTitleResult', result.data, !result.success);
+        }
+
+        async function searchByAuthor() {
+            const author = document.getElementById('searchAuthor').value;
+            const result = await apiCall('GET', `/search/books?author=${encodeURIComponent(author)}`);
+            showResult('searchAuthorResult', result.data, !result.success);
+        }
+
+        // List functions
+        async function listAllBooks() {
+            const result = await apiCall('GET', '/books');
+            showResult('allBooksResult', result.data, !result.success);
+        }
+
+        async function listAvailableBooks() {
+            const result = await apiCall('GET', '/books/available');
+            showResult('availableBooksResult', result.data, !result.success);
+        }
+
+        async function listAllUsers() {
+            const result = await apiCall('GET', '/users');
+            showResult('allUsersResult', result.data, !result.success);
+        }
+    </script>
+</body>
+</html>
