@@ -2,7 +2,7 @@
 
 Hệ thống quản lý thư viện với hai giao diện: **Console Application** (offline) và **Web Application** (API + Frontend).
 
-![Library Management System Web Interface](screenshot.png)
+![Library Management System Web Interface](Screenshot 2026-03-07 224801.png)
 
 ## ✨ Tính năng
 
